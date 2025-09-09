@@ -1,34 +1,31 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
+import { Graph } from "@/components/Graph";
+import type { GraphOptions } from "@antv/g6";
 
 export default function Home() {
+  const graphOptions: GraphOptions = {
+    width: 500,
+    height: 500,
+    data: {
+      nodes: [
+        {
+          id: "node-1",
+          style: { x: 50, y: 100 },
+        },
+        {
+          id: "node-2",
+          style: { x: 150, y: 100 },
+        },
+      ],
+      edges: [{ id: "edge-1", source: "node-1", target: "node-2" }],
+    },
+    behaviors: ["drag-canvas", "zoom-canvas", "drag-element"],
+  };
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-background">
-      <div className="text-center space-y-8">
-        <h1 className="text-4xl font-bold text-foreground">
-          Next.js + TypeScript + Tailwind + shadcn/ui
-        </h1>
-        <p className="text-lg text-muted-foreground">
-          A modern React framework with beautiful UI components
-        </p>
-
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold">shadcn/ui Button Examples</h2>
-          <div className="flex flex-wrap gap-4 items-center justify-center">
-            <Button>Default Button</Button>
-            <Button variant="secondary">Secondary</Button>
-            <Button variant="outline">Outline</Button>
-            <Button variant="ghost">Ghost</Button>
-            <Button variant="link">Link</Button>
-            <Button variant="destructive">Destructive</Button>
-          </div>
-
-          <div className="flex flex-wrap gap-4 items-center justify-center mt-4">
-            <Button size="sm">Small</Button>
-            <Button size="default">Default</Button>
-            <Button size="lg">Large</Button>
-          </div>
-        </div>
-      </div>
+    <div style={{ width: "500px", height: "500px" }}>
+      <Graph options={graphOptions} />
     </div>
   );
 }
