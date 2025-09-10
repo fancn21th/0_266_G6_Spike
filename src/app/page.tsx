@@ -1,30 +1,74 @@
 "use client";
 
 import { Graph } from "@/components/Graph";
+import { treeToGraphData } from "@antv/g6";
 import type { GraphOptions } from "@antv/g6";
+import data from "./data.txt";
+
+const text = data as string;
+const jsonData = JSON.parse(text);
+
+/**
+ * If the node is a leaf node
+ * @param d - node data
+ * @returns whether the node is a leaf node
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isLeafNode(d: any): boolean {
+  return !d.children || d.children.length === 0;
+}
 
 export default function Home() {
   const graphOptions: GraphOptions = {
-    width: 500,
-    height: 500,
-    data: {
-      nodes: [
-        {
-          id: "node-1",
-          style: { x: 50, y: 100 },
-        },
-        {
-          id: "node-2",
-          style: { x: 150, y: 100 },
-        },
-      ],
-      edges: [{ id: "edge-1", source: "node-1", target: "node-2" }],
+    autoFit: "view",
+    data: treeToGraphData(jsonData),
+    behaviors: [
+      "drag-canvas",
+      "zoom-canvas",
+      "drag-element",
+      "collapse-expand",
+    ],
+    node: {
+      style: (d) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const style: any = {
+          labelText: d.id,
+          labelPlacement: "right",
+          labelOffsetX: 2,
+          labelBackground: true,
+        };
+        if (isLeafNode(d)) {
+          Object.assign(style, {
+            labelTransform: [
+              ["rotate", 90],
+              ["translate", 18],
+            ],
+            labelBaseline: "center",
+            labelTextAlign: "left",
+          });
+        }
+        return style;
+      },
+      animation: {
+        enter: false,
+      },
     },
-    behaviors: ["drag-canvas", "zoom-canvas", "drag-element"],
+    edge: {
+      type: "cubic-vertical",
+      animation: {
+        enter: false,
+      },
+    },
+    layout: {
+      type: "dendrogram",
+      direction: "TB", // H / V / LR / RL / TB / BT
+      nodeSep: 50,
+      rankSep: 120,
+    },
   };
 
   return (
-    <div style={{ width: "500px", height: "500px" }}>
+    <div className="w-full h-full bg-gradient-to-b from-blue-100 to-blue-300">
       <Graph options={graphOptions} />
     </div>
   );
